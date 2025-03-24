@@ -20,6 +20,13 @@ class Program
             ("<People><Design><Code>hello world</Code></Design>", false),//extra opening tag
             ("<Design><Code>hello world</Code></Design></People>", false),//extra closing tag
             ("<People><Design><Code>hello world</Code><Design></People>", false),//reopening tag
+
+            ("<People>Design><Code>hello world</Code><Design></People>", false),//synthetically erroneous input
+            ("<People><Design><Code>hello world</Code<Design></People>", false),//synthetically erroneous input
+            ("<People><Design><Code>hello world</Code><Design>/People>", false),//synthetically erroneous input
+            ("<People><Design><Codehello world</Code><Design></People>", false),//synthetically erroneous input
+            ("<People><Design><Code>", false),//synthetically erroneous input
+            ("<People><Design><Code>hello world", false),//synthetically erroneous input
         };
         int failedCount = 0;
         foreach ((string input, bool expected) in testCases)
