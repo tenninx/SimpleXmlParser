@@ -5,7 +5,7 @@
         /// <summary>
         /// Linear processing of XML string
         /// </summary>
-        /// <param name="p_strXml">XML string</param>
+        /// <param name="p_strXml">Input XML string to validate</param>
         /// <returns>Validity of the input</returns>
         public static bool DetermineXml(string p_strXml)
         {
@@ -47,17 +47,19 @@
 
         private static bool ProcessTag(Stack<string> p_objTagStack, string p_strReadString)
         {
-            // Invalid if empty tag, or no more tags in stack
+            // Invalid if empty tag name
             if (p_strReadString.Length == 0) return false;
 
-            // Check if closing tag and validate the tag
+            // Check if closing tag
             if (p_strReadString[0].Equals('/'))
             {
+                // Invalid if no more tags in stack to close
                 if (p_objTagStack.Count == 0) return false;
+                // Validate if current closing tag matches the supposed opening tag
                 return p_objTagStack.Pop().Equals(p_strReadString.Substring(1));
             }
             else
-                // Push the tag to stack
+                // Push the opening tag to stack
                 p_objTagStack.Push(p_strReadString);
 
             return true;

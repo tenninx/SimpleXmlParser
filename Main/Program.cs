@@ -12,6 +12,7 @@ class Program
         {
             ("<Design><Code>hello world</Code></Design>", true),//normal case
             ("<Design><Code>hello world</Code><People>Good person</People></Design>", true),//multiple same-level tags
+            ("<Design>some data<Code>hello world</Code>some more data</Design>", true),//normal case with additional valid data
             
             ("<Design><Code>hello world</Code></Design><People>", false),//no closing tag for "People" 
             ("<People><Design><Code>hello world</People></Code></Design>", false),// "/Code" should come before "/People" 
