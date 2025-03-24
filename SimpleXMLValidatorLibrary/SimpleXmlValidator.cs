@@ -2,11 +2,16 @@
 {
     public class SimpleXmlValidator
     {
+        /// <summary>
+        /// Linear processing of XML string
+        /// </summary>
+        /// <param name="xml">XML string</param>
+        /// <returns>Validity of the input</returns>
         public static bool DetermineXml(string xml)
         {
             // Perform the basic check
-            if (!InitAndPerformBasicCheck(xml)) return false;
-            
+            if (!PerformBasicCheck(xml)) return false;
+
             // Local variables
             Stack<string> tagStack = new Stack<string>();
             bool isClosing = false;
@@ -30,18 +35,21 @@
                 // Check if the tag is valid
                 if (!ProcessTag(tagStack, ref isClosing, readString)) return false;
 
-                // Discard the processed string
+                // Discard the processed string in linear way
                 xml = xml.Substring(readString.Length + 1);
             }
             while (xml.Length > 0);
+
+            // Invalid if unclosed tags exist
+            if (tagStack.Count != 0) return false;
 
             return true;
         }
 
         private static bool ProcessTag(Stack<string> TagStack, ref bool isClosing, string readString)
         {
-            // Invalidate if empty tag, or an opening tag after closing
-            if (readString.Length == 0 || (isClosing && !readString[0].Equals('/')))
+            // Invalid if empty tag, or no more tags in stack
+            if (readString.Length == 0 || (isClosing && (TagStack.Count == 0 || !readString[0].Equals('/'))))
                 return false;
 
             // Check if closing tag and validate the tag
@@ -57,7 +65,7 @@
             return true;
         }
 
-        private static bool InitAndPerformBasicCheck(string xml)
+        private static bool PerformBasicCheck(string xml)
         {
             // Trim leading and trailing whitespaces
             xml = xml.Trim();
