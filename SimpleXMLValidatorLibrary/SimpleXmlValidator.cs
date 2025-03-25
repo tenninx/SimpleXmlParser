@@ -135,17 +135,7 @@ namespace SimpleXMLValidatorLibrary
             else if (p_strXml.Length == 0 && p_objTagStack.Count > 0) return false;
 
             // If data, discard it
-            if (!p_strXml[0].Equals('<'))
-            {
-                int idx = p_strXml.IndexOf('<');
-
-                // Discard previously read tag
-                if (idx != -1)
-                    p_strXml = p_strXml.Substring(idx);
-                // Invalid if no tag after data
-                else
-                    return false;
-            }
+            if (!p_strXml[0].Equals('<') && !DiscardData(ref p_strXml)) return false;
 
             // Discard the leading '<' character
             p_strXml = p_strXml.Substring(1);
