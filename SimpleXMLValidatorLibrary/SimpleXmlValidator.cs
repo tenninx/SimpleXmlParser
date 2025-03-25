@@ -16,7 +16,6 @@ namespace SimpleXMLValidatorLibrary
 
             // Local variables
             SimpleStack _objTagStack = new SimpleStack();
-            string _strReadString = string.Empty;
 
             do
             {
@@ -31,7 +30,7 @@ namespace SimpleXMLValidatorLibrary
                 }
 
                 // Read the tag
-                _strReadString = p_strXml.Substring(0, p_strXml.IndexOf(">"));
+                string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf(">"));
 
                 // Check if the tag is valid
                 if (!ProcessTag(_objTagStack, _strReadString)) return false;
@@ -112,13 +111,8 @@ namespace SimpleXMLValidatorLibrary
             // Perform the basic check
             if (!PerformBasicCheck(p_strXml)) return false;
 
-            // Discard the leading '<' character
-            p_strXml = p_strXml.Substring(1);
-
-            // Read the tag
-            string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf(">"));
-
-            return DetermineXmlRecursive(p_strXml.Substring(p_strXml.IndexOf(">") + 1), new SimpleStack() { _strReadString });
+            // Read the first tag and push it to stack
+            return DetermineXmlRecursive(p_strXml.Substring(p_strXml.IndexOf(">") + 1), new SimpleStack() { p_strXml.Substring(1, p_strXml.IndexOf(">") - 1) });
         }
 
         /// <summary>
