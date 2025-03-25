@@ -101,5 +101,74 @@ namespace SimpleXMLValidatorLibrary
 
             return true;
         }
+
+        /// <summary>
+        /// Recursive processing of XML string
+        /// </summary>
+        /// <param name="p_strXml">Input XML string to validate</param>
+        /// <returns>Validity of the input</returns>
+        public static bool DetermineXmlRecursive(string p_strXml)
+        {
+            // Perform the basic check
+            if (!PerformBasicCheck(p_strXml)) return false;
+
+            // Discard the leading '<' character
+            p_strXml = p_strXml.Substring(1);
+
+            // Read the tag
+            string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf(">"));
+
+            return DetermineXmlRecursive(p_strXml.Substring(p_strXml.IndexOf(">") + 1), new SimpleStack() { _strReadString });
+        }
+
+        /// <summary>
+        /// Private recursive processing of XML string
+        /// </summary>
+        /// <param name="p_strXml">Remaining XML string to validate</param>
+        /// <param name="p_objTagStack">Unclosed tag stack</param>
+        /// <returns>Validity of the input</returns>
+        private static bool DetermineXmlRecursive(string p_strXml, SimpleStack p_objTagStack)
+        {
+            // XML is valid when fully processed and no unclosed tags
+            if (p_strXml.Length == 0 && p_objTagStack.Count == 0) return true;
+            // XML is invalid when fully processed but unclosed tags exist
+            else if (p_strXml.Length == 0 && p_objTagStack.Count > 0) return false;
+
+            // If data, discard it
+            if (!p_strXml[0].Equals('<'))
+            {
+                int idx = p_strXml.IndexOf('<');
+
+                // Discard previously read tag
+                if (idx != -1)
+                    p_strXml = p_strXml.Substring(idx);
+                // Invalid if no tag after data
+                else
+                    return false;
+            }
+
+            // Discard the leading '<' character
+            p_strXml = p_strXml.Substring(1);
+
+            // If closing tag, pop and validate from stack
+            if (p_strXml.Length > 1 && p_strXml[0].Equals('/'))
+            {
+                string _strReadString = p_strXml.Substring(1, p_strXml.IndexOf('>') - 1);
+                // Validate if current closing tag matches the supposed opening tag
+                if (!p_objTagStack.Pop().Equals(_strReadString)) return false;
+            }
+            // If opening tag, push to stack
+            else
+            {
+                string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf('>'));
+                p_objTagStack.Push(_strReadString);
+            }
+
+            // Discard processed tag
+            p_strXml = p_strXml.Substring(p_strXml.IndexOf('>') + 1);
+
+            // Recursive invocation
+            return DetermineXmlRecursive(p_strXml, p_objTagStack);
+        }
     }
 }
