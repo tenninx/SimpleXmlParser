@@ -1,6 +1,6 @@
 # SimpleXmlValidator ReadMe
 
-## SimpleXmlValidator is a console application that validates a given XML statement in its simpliest form e.g. no attributes.
+## SimpleXmlValidator is a console application that validates a given XML statement.
 
 ### The console executable "Main.exe" accepts 2 params as follows:
 ```
@@ -16,9 +16,21 @@ Main.exe "<Design><Code>hello world</Code></Design>" 1
 
 #### The application implements a simpler version of stack called `SimpleStack` instead of depending on the .NET `Stack` class.
 
-Note that the input XML should not contain any attributes in any XML nodes. That can be implemented when I have the clearance to do that.
+Note that if the input XML contains any attributes in any XML node, the closing tag of the particular node must contain the same attributes. *Given permit, improvement can be made.* Here is an example:
+```
+<Design>
+	<Line number="1">
+		<Code>good morning world</Code>
+		<People>good person</People>
+	</Line number="1">
+	<Line number="2">
+		<Code>good night world</Code>
+		<People>nice people</People>
+	</Line number="2">
+</Design>
+```
 
-Though unusual, XML permits the following data, which has been implemented in my logic to allow that:
+Though unusual, XML permits data in between different tags, which has been implemented in my logic to allow that:
 ```
 <Design>
 	<Line>some data
