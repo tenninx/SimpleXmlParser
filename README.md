@@ -16,17 +16,17 @@ Main.exe "<Design><Code>hello world</Code></Design>" 1
 
 #### The application implements a simpler version of stack called `SimpleStack` instead of depending on the .NET `Stack` class.
 
-Note that if the input XML contains any attributes in any XML node, the closing tag of the particular node must contain the same attributes. *Given permit, improvement can be made.* Here is an example:
+The code has been updated to support attributes in any XML node. Here is an example:
 ```
 <Design>
 	<Line number="1">
 		<Code>good morning world</Code>
 		<People>good person</People>
-	</Line number="1">
+	</Line>
 	<Line number="2">
 		<Code>good night world</Code>
 		<People>nice people</People>
-	</Line number="2">
+	</Line>
 </Design>
 ```
 

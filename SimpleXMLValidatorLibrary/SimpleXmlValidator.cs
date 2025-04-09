@@ -29,8 +29,8 @@ namespace SimpleXMLValidatorLibrary
                     continue;
                 }
 
-                // Read the tag
-                string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf(">"));
+                // Read the tag and discard any attributes
+                string _strReadString = DiscardAttributes(p_strXml.Substring(0, p_strXml.IndexOf(">")));
 
                 // Check if the tag is valid
                 if (!ProcessTag(_objTagStack, _strReadString)) return false;
@@ -76,6 +76,19 @@ namespace SimpleXMLValidatorLibrary
         }
 
         /// <summary>
+        /// Discard any attributes present on a tag
+        /// </summary>
+        /// <param name="p_strXml">Input XML string</param>
+        /// <returns>The tag name with attributes</returns>
+        private static string DiscardAttributes(string p_strXml)
+        {
+            int _spaceIdx = p_strXml.IndexOf(" ");
+            if (_spaceIdx != -1)
+                return p_strXml.Substring(0, _spaceIdx);
+            return p_strXml;
+        }
+
+        /// <summary>
         /// Process the read tag and push into stack when opening or pop when closing
         /// </summary>
         /// <param name="p_objTagStack">Stack storing all the read tags</param>
@@ -112,7 +125,7 @@ namespace SimpleXMLValidatorLibrary
             if (!PerformBasicCheck(p_strXml)) return false;
 
             // Read the first tag and push it to stack
-            return DetermineXmlRecursive(p_strXml.Substring(p_strXml.IndexOf(">") + 1), new SimpleStack() { p_strXml.Substring(1, p_strXml.IndexOf(">") - 1) });
+            return DetermineXmlRecursive(p_strXml.Substring(p_strXml.IndexOf(">") + 1), new SimpleStack() { DiscardAttributes(p_strXml.Substring(1, p_strXml.IndexOf(">") - 1)) });
         }
 
         /// <summary>
@@ -143,10 +156,7 @@ namespace SimpleXMLValidatorLibrary
             }
             // If opening tag, push to stack
             else
-            {
-                string _strReadString = p_strXml.Substring(0, p_strXml.IndexOf('>'));
-                p_objTagStack.Push(_strReadString);
-            }
+                p_objTagStack.Push(DiscardAttributes(p_strXml.Substring(0, p_strXml.IndexOf('>'))));
 
             // Discard processed tag
             p_strXml = p_strXml.Substring(p_strXml.IndexOf('>') + 1);
